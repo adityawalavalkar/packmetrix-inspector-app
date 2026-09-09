@@ -42,7 +42,7 @@ function SplashScreen() {
         </div>
 
         <div className="fade-up flex flex-col items-center gap-6">
-          <div className="flex h-32 w-32 items-center justify-center rounded-[2rem] bg-primary-foreground/12 ring-1 ring-primary-foreground/25">
+          <div className="flex h-32 w-32 items-center justify-center rounded-[2rem] bg-primary-foreground ring-1 ring-primary-foreground/40 shadow-elevated">
             <img src={logo} alt="PackMetrix AI emblem" width={512} height={512} className="h-20 w-20" />
           </div>
           <div className="text-center">
