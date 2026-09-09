@@ -198,10 +198,10 @@
 
 @keyframes scan-sweep {
   0% {
-    transform: translateY(0%);
+    top: 4%;
   }
   100% {
-    transform: translateY(1000%);
+    top: 92%;
   }
 }
 
