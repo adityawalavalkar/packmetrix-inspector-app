@@ -52,7 +52,7 @@ function SplashScreen() {
             </p>
           </div>
           <div className="h-1 w-28 overflow-hidden rounded-full bg-primary-foreground/25">
-            <div className="scan-line h-full w-1/3 rounded-full bg-primary-foreground" />
+            <div className="h-full w-1/3 animate-pulse rounded-full bg-primary-foreground" />
           </div>
         </div>
 
