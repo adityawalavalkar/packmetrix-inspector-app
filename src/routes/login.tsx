@@ -33,7 +33,7 @@ function LoginScreen() {
       <div className="flex min-h-screen w-full max-w-[390px] flex-col bg-background">
         <div className="gov-gradient rounded-b-[2rem] px-6 pb-10 pt-12 text-primary-foreground">
           <div className="flex items-center gap-3">
-            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-foreground/15">
+            <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-foreground">
               <img src={logo} alt="PackMetrix AI emblem" width={512} height={512} className="h-9 w-9" />
             </div>
             <div>
