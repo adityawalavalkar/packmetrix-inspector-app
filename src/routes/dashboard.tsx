@@ -8,9 +8,11 @@ import {
   ChevronRight,
   CheckCircle2,
   XCircle,
+  AlertTriangle,
 } from "lucide-react";
 import { MobileShell } from "@/components/MobileShell";
 import { AppBar } from "@/components/AppBar";
+import { computeStats, formatWhen, useInspections } from "@/lib/inspections";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
@@ -30,13 +32,6 @@ export const Route = createFileRoute("/dashboard")({
   component: DashboardScreen,
 });
 
-const stats = [
-  { label: "Total Scans", value: "128", icon: ScanLine, tone: "primary" },
-  { label: "Compliance Rate", value: "82%", icon: ShieldCheck, tone: "success" },
-  { label: "Violations", value: "23", icon: TriangleAlert, tone: "destructive" },
-  { label: "Pending Notices", value: "6", icon: FileClock, tone: "warning" },
-] as const;
-
 const toneClasses: Record<string, string> = {
   primary: "bg-primary-soft text-primary",
   success: "bg-success-soft text-success",
@@ -44,14 +39,17 @@ const toneClasses: Record<string, string> = {
   warning: "bg-warning-soft text-warning",
 };
 
-const recent = [
-  { product: "Aashirvaad Atta 5 kg", place: "Sadar Bazar, Delhi", time: "Today, 11:42", ok: true },
-  { product: "Parachute Oil 500 ml", place: "Karol Bagh, Delhi", time: "Today, 10:15", ok: false },
-  { product: "Tata Salt 1 kg", place: "Azadpur Mandi", time: "Yesterday, 17:05", ok: true },
-  { product: "Surf Excel 1 kg", place: "Lajpat Nagar", time: "Yesterday, 12:30", ok: false },
-];
-
 function DashboardScreen() {
+  const inspections = useInspections();
+  const summary = computeStats(inspections);
+  const stats = [
+    { label: "Total Scans", value: String(summary.total), icon: ScanLine, tone: "primary" },
+    { label: "Compliance Rate", value: `${summary.rate}%`, icon: ShieldCheck, tone: "success" },
+    { label: "Violations", value: String(summary.violations), icon: TriangleAlert, tone: "destructive" },
+    { label: "Pending Notices", value: String(summary.pending), icon: FileClock, tone: "warning" },
+  ] as const;
+  const recent = inspections.slice(0, 4);
+
   return (
     <MobileShell>
       <AppBar
@@ -136,32 +134,49 @@ function DashboardScreen() {
               View all
             </Link>
           </div>
-          <ul className="card-surface divide-y divide-border overflow-hidden">
-            {recent.map((item) => (
-              <li key={item.product}>
-                <Link to="/result" className="flex items-center gap-3 px-4 py-3">
-                  <span
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
-                      item.ok ? "bg-success-soft text-success" : "bg-destructive-soft text-destructive"
-                    }`}
-                  >
-                    {item.ok ? (
-                      <CheckCircle2 className="h-5 w-5" />
-                    ) : (
-                      <XCircle className="h-5 w-5" />
-                    )}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-medium">{item.product}</span>
-                    <span className="block truncate text-xs text-muted-foreground">
-                      {item.place} · {item.time}
+          {recent.length === 0 ? (
+            <div className="card-surface px-4 py-8 text-center">
+              <p className="text-sm font-medium">No inspections yet</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Saved inspections will appear here.
+              </p>
+            </div>
+          ) : (
+            <ul className="card-surface divide-y divide-border overflow-hidden">
+              {recent.map((item) => (
+                <li key={item.id}>
+                  <Link to="/history" className="flex items-center gap-3 px-4 py-3">
+                    <span
+                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
+                        item.status === "compliant"
+                          ? "bg-success-soft text-success"
+                          : item.status === "warning"
+                            ? "bg-warning-soft text-warning"
+                            : "bg-destructive-soft text-destructive"
+                      }`}
+                    >
+                      {item.status === "compliant" ? (
+                        <CheckCircle2 className="h-5 w-5" />
+                      ) : item.status === "warning" ? (
+                        <AlertTriangle className="h-5 w-5" />
+                      ) : (
+                        <XCircle className="h-5 w-5" />
+                      )}
                     </span>
-                  </span>
-                  <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-                </Link>
-              </li>
-            ))}
-          </ul>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-medium">
+                        {item.fields.productName ?? "Unnamed product"}
+                      </span>
+                      <span className="block truncate text-xs text-muted-foreground">
+                        {item.place} · {formatWhen(item.createdAt)}
+                      </span>
+                    </span>
+                    <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
       </div>
     </MobileShell>
