@@ -32,13 +32,6 @@ export const Route = createFileRoute("/dashboard")({
   component: DashboardScreen,
 });
 
-const stats = [
-  { label: "Total Scans", value: "128", icon: ScanLine, tone: "primary" },
-  { label: "Compliance Rate", value: "82%", icon: ShieldCheck, tone: "success" },
-  { label: "Violations", value: "23", icon: TriangleAlert, tone: "destructive" },
-  { label: "Pending Notices", value: "6", icon: FileClock, tone: "warning" },
-] as const;
-
 const toneClasses: Record<string, string> = {
   primary: "bg-primary-soft text-primary",
   success: "bg-success-soft text-success",
@@ -46,14 +39,17 @@ const toneClasses: Record<string, string> = {
   warning: "bg-warning-soft text-warning",
 };
 
-const recent = [
-  { product: "Aashirvaad Atta 5 kg", place: "Sadar Bazar, Delhi", time: "Today, 11:42", ok: true },
-  { product: "Parachute Oil 500 ml", place: "Karol Bagh, Delhi", time: "Today, 10:15", ok: false },
-  { product: "Tata Salt 1 kg", place: "Azadpur Mandi", time: "Yesterday, 17:05", ok: true },
-  { product: "Surf Excel 1 kg", place: "Lajpat Nagar", time: "Yesterday, 12:30", ok: false },
-];
-
 function DashboardScreen() {
+  const inspections = useInspections();
+  const summary = computeStats(inspections);
+  const stats = [
+    { label: "Total Scans", value: String(summary.total), icon: ScanLine, tone: "primary" },
+    { label: "Compliance Rate", value: `${summary.rate}%`, icon: ShieldCheck, tone: "success" },
+    { label: "Violations", value: String(summary.violations), icon: TriangleAlert, tone: "destructive" },
+    { label: "Pending Notices", value: String(summary.pending), icon: FileClock, tone: "warning" },
+  ] as const;
+  const recent = inspections.slice(0, 4);
+
   return (
     <MobileShell>
       <AppBar
