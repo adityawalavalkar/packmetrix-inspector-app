@@ -8,9 +8,11 @@ import {
   ChevronRight,
   CheckCircle2,
   XCircle,
+  AlertTriangle,
 } from "lucide-react";
 import { MobileShell } from "@/components/MobileShell";
 import { AppBar } from "@/components/AppBar";
+import { computeStats, formatWhen, useInspections } from "@/lib/inspections";
 
 export const Route = createFileRoute("/dashboard")({
   head: () => ({
