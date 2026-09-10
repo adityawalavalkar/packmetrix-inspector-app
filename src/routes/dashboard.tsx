@@ -134,32 +134,49 @@ function DashboardScreen() {
               View all
             </Link>
           </div>
-          <ul className="card-surface divide-y divide-border overflow-hidden">
-            {recent.map((item) => (
-              <li key={item.product}>
-                <Link to="/result" className="flex items-center gap-3 px-4 py-3">
-                  <span
-                    className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
-                      item.ok ? "bg-success-soft text-success" : "bg-destructive-soft text-destructive"
-                    }`}
-                  >
-                    {item.ok ? (
-                      <CheckCircle2 className="h-5 w-5" />
-                    ) : (
-                      <XCircle className="h-5 w-5" />
-                    )}
-                  </span>
-                  <span className="min-w-0 flex-1">
-                    <span className="block truncate text-sm font-medium">{item.product}</span>
-                    <span className="block truncate text-xs text-muted-foreground">
-                      {item.place} · {item.time}
+          {recent.length === 0 ? (
+            <div className="card-surface px-4 py-8 text-center">
+              <p className="text-sm font-medium">No inspections yet</p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                Saved inspections will appear here.
+              </p>
+            </div>
+          ) : (
+            <ul className="card-surface divide-y divide-border overflow-hidden">
+              {recent.map((item) => (
+                <li key={item.id}>
+                  <Link to="/history" className="flex items-center gap-3 px-4 py-3">
+                    <span
+                      className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full ${
+                        item.status === "compliant"
+                          ? "bg-success-soft text-success"
+                          : item.status === "warning"
+                            ? "bg-warning-soft text-warning"
+                            : "bg-destructive-soft text-destructive"
+                      }`}
+                    >
+                      {item.status === "compliant" ? (
+                        <CheckCircle2 className="h-5 w-5" />
+                      ) : item.status === "warning" ? (
+                        <AlertTriangle className="h-5 w-5" />
+                      ) : (
+                        <XCircle className="h-5 w-5" />
+                      )}
                     </span>
-                  </span>
-                  <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
-                </Link>
-              </li>
-            ))}
-          </ul>
+                    <span className="min-w-0 flex-1">
+                      <span className="block truncate text-sm font-medium">
+                        {item.fields.productName ?? "Unnamed product"}
+                      </span>
+                      <span className="block truncate text-xs text-muted-foreground">
+                        {item.place} · {formatWhen(item.createdAt)}
+                      </span>
+                    </span>
+                    <ChevronRight className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          )}
         </section>
       </div>
     </MobileShell>
