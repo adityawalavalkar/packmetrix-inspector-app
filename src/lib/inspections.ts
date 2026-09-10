@@ -19,6 +19,27 @@ export type FieldCheck = {
   rule: string;
 };
 
+/** Extra observations the label reader reports, used by Rules 8 & 9. */
+export type LabelSignals = {
+  declarationsOnPrincipalPanel: boolean | null;
+  textLegible: boolean | null;
+  legibilityNotes: string | null;
+};
+
+export type RuleKey = "rule6" | "rule8" | "rule9" | "rule10" | "rule11";
+
+export type RuleResult = {
+  key: RuleKey;
+  title: string;
+  provision: string;
+  status: "pass" | "fail" | "warn";
+  weight: number;
+  earned: number;
+  summary: string;
+  findings: string[];
+  remark: string;
+};
+
 export type Inspection = {
   id: string;
   createdAt: string;
@@ -26,6 +47,9 @@ export type Inspection = {
   rawText: string;
   fields: ExtractedFields;
   checks: FieldCheck[];
+  rules?: RuleResult[];
+  signals?: LabelSignals;
+  recommendation?: string;
   score: number;
   status: "compliant" | "warning" | "violation";
   remarks: string;
