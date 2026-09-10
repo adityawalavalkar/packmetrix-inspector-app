@@ -103,7 +103,7 @@ export const FIELD_META: {
 const isPresent = (value: string | null | undefined) =>
   typeof value === "string" && value.trim().length > 0 && !/^(n\/?a|none|not found)$/i.test(value.trim());
 
-export function evaluateFields(fields: ExtractedFields) {
+export function evaluateFields(fields: ExtractedFields, signals?: LabelSignals) {
   const checks: FieldCheck[] = FIELD_META.map((meta) => {
     const value = fields[meta.key];
     if (isPresent(value)) {
